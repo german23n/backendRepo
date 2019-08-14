@@ -4,6 +4,19 @@
  * Module dependencies.
  */
 
+ var MongoClient= require('mongodb').MongoClient;
+ var MongoUri = 'mongodb://localhost:27017';
+ var MongoDb='swRepo';
+ var MongoOption= {useNewUrlParse: true};
+ 
+ MongoClient.connect(MongoUri,MongoOption,(err,cnn)=>{
+
+  if (err){
+    console.log(err);
+    process.exit(1);
+  }else {
+    console.log("concecion exitosa a mongo");
+  }
 var app = require('../app');
 var debug = require('debug')('myappbackend:server');
 var http = require('http');
@@ -88,3 +101,7 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+
+
+ }); //mongo connect
