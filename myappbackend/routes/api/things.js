@@ -10,15 +10,7 @@ function thingsInit(db){
 
 var  thingsColl = db.collection('things');
 
-var thingsCollection = [];
 
-var thingsStruct = {
-  "descripcion":'',
-  "fecha": 0,
-  "by":{},
-  "dd":'NA',
-  "type":""
-};
 
 
 router.get('/', (req, res, next)=>{
@@ -29,79 +21,20 @@ router.get('/', (req, res, next)=>{
   ///res.status(200).json(thingsCollection);
 });
 
-  router.get('/page', (req, res, next) => {
-    var by = {"by._id": new ObjectID(req.user._id)};
-    getThings(1, 50, res, by);
-  });
-
-  router.get('/page/:p/:n', (req, res, next) => {
-    var by = { "by._id": new ObjectID(req.user._id) };
-    var page = parseInt(req.params.p);
-    var items = parseInt(req.params.n);
-    getThings(page, items, res , by);
-  });
-
-  router.get('/page/:p/:n/:dd', (req, res, next) => {
-    var by = { "by._id": new ObjectID(req.user._id) };
-    var page = parseInt(req.params.p);
-    var items = parseInt(req.params.n);
-    var dd = req.params.dd;
-    getThings(page, items, res, by, dd);
-  });
-
-  async function getThings(page, items, res, by, dd) {
-    var query = by;
-    if(!!dd){
-      by.dd = dd;
-    }
-    var options = {
-      "limit": items,
-      "skip":((page-1) * items),
-      "projection":{
-        "descripcion":1,"type":1,"visited":1
-      },
-      "sort": [["fecha",-1]]
-    };
-    let a = thingsColl.find(query,options)
-    let totalThings = await a.count();
-    a.toArray((err, things) => {
-      if (err) return res.status(200).json([]);
-      return res.status(200).json({ things, totalThings});
-    });//find toArray
-  }
+  
+  
 
 
-router.get('/:id', (req, res, next)=>{
-  var query = {"_id": new ObjectID(req.params.id)}
-  thingsColl.findOne(query, (err, doc)=>{
-    if(err) {
-      console.log(err);
-      return res.status(401).json({"error":"Error al extraer documento"});
-    }
-    return res.status(200).json(doc);
-  }); //findOne
-});// get ById
+
 
 // CRUD Crear, Leer (Read), Actualizar (Update) ,Eliminar (Delete)
 // REST
-// GET  consultas  Read, lectura
+// GET  consultas  Read, lectur
 // POST Crear  - Insert C
 // PUT  Update - Actualizar
 // DELETE  Delete - ELiminar
 
-router.post('/', (req, res, next)=>{
-  var {_id, email} = req.user;
-  var newElement = Object.assign({},
-    thingsStruct,
-    req.body,
-    {
-      "fecha": new Date().getTime(),
-      "by": {
-        "_id": new ObjectID(_id),
-        "email": email
-      }
-    }
-  );
+
 
   //thingsCollection.push(newElement);
   //res.status(200).json(newElement);
@@ -112,7 +45,7 @@ router.post('/', (req, res, next)=>{
     }
     return res.status(200).json({"n": result.insertedCount,"obj": result.ops[0]});
   });//insertOne
-}); // post /
+
 // http://localhost:3000/api/things/1236183491
 
 
@@ -150,11 +83,7 @@ router.delete('/:id', (req, res, next) => {
     }
     return res.status(200).json(result);
   });
-  //var soft = req.params.soft;
-  // thingsCollection = thingsCollection.filter( (e, i) => {
-  //   return (e.id !== id );
-  // } ); //
-  // res.status(200).json({ 'msg': 'Elemento ' + id + ' fué eleminido!!!' });
+  
 });// put /
 
  return router;

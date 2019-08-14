@@ -8,6 +8,7 @@
  var MongoUri = 'mongodb://localhost:27017';
  var MongoDb='swRepo';
  var MongoOption= {useNewUrlParse: true};
+
  
  MongoClient.connect(MongoUri,MongoOption,(err,cnn)=>{
 
@@ -17,7 +18,8 @@
   }else {
     console.log("concecion exitosa a mongo");
   }
-var app = require('../app');
+  var db = conn.database(mongoDb);
+var app = require('../app')(db);
 var debug = require('debug')('myappbackend:server');
 var http = require('http');
 
